@@ -78,6 +78,7 @@ function init(N) {
   updateColourBtn();
   render();
   updateStats();
+  pushURL();
 }
 
 // ── Canvas rendering ──────────────────────────────────────────────────────────
@@ -249,6 +250,7 @@ canvas.addEventListener('click', e => {
   if (state.mode === 'coloured') recomputeColours();
   render();
   updateStats();
+  pushURL();
 });
 
 canvas.addEventListener('mousemove', e => {
@@ -275,6 +277,7 @@ randomiseBtn.addEventListener('click', () => {
   if (state.mode === 'coloured') recomputeColours();
   render();
   updateStats();
+  pushURL();
 });
 
 colourBtn.addEventListener('click', () => {
@@ -319,6 +322,7 @@ stratSelect.addEventListener('change', () => {
     render();
     updateStats();
   }
+  pushURL();
 });
 
 sizeInput.addEventListener('change', () => {
@@ -329,6 +333,67 @@ sizeInput.addEventListener('change', () => {
   init(N);
 });
 
+// ── URL encoding ─────────────────────────────────────────────────────────────
+
+function seedToHex(seed) {
+  const bytes = [];
+  for (let i = 0; i < seed.length; i += 8) {
+    let byte = 0;
+    for (let b = 0; b < 8; b++)
+      byte = (byte << 1) | (i + b < seed.length ? seed[i + b] & 1 : 0);
+    bytes.push(byte);
+  }
+  return bytes.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function hexToSeed(hex, N) {
+  const seed = [];
+  for (let i = 0; i < hex.length && seed.length < N; i += 2) {
+    const byte = parseInt(hex.slice(i, i + 2), 16);
+    for (let b = 7; b >= 0 && seed.length < N; b--)
+      seed.push((byte >> b) & 1);
+  }
+  return seed;
+}
+
+function pushURL() {
+  const p = new URLSearchParams({
+    n: state.N,
+    c: state.strategy,
+    r: seedToHex(state.rowSeed),
+    h: seedToHex(state.colSeed),
+  });
+  history.replaceState(null, '', '?' + p.toString());
+}
+
+function stateFromURL() {
+  const p = new URLSearchParams(location.search);
+  const n = parseInt(p.get('n'), 10);
+  const c = p.get('c');
+  const r = p.get('r');
+  const h = p.get('h');
+  if (n && r && h) {
+    state.N        = Math.min(100, Math.max(4, n));
+    state.strategy = (c === 'greedy') ? 'greedy' : 'random';
+    state.rowSeed  = hexToSeed(r, state.N);
+    state.colSeed  = hexToSeed(h, state.N);
+    sizeInput.value   = state.N;
+    stratSelect.value = state.strategy;
+    return true;
+  }
+  return false;
+}
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
-window.addEventListener('load', () => init(state.N));
+window.addEventListener('load', () => {
+  if (stateFromURL()) {
+    state.mode = 'borders';
+    recomputeMatrix();
+    updateColourBtn();
+    render();
+    updateStats();
+  } else {
+    init(state.N);
+  }
+});
