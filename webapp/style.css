@@ -133,8 +133,9 @@ canvas { display: block; }
 /* ── Footer ──────────────────────────────────────────────────────────────── */
 
 footer {
-  text-align: center;
-  padding: 1.5rem;
+  position: fixed;
+  bottom: 1rem;
+  right: 1.25rem;
   font-size: 0.65rem;
   font-style: italic;
   color: var(--text-light);
