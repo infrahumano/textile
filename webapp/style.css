@@ -90,28 +90,27 @@ button {
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   text-transform: lowercase;
-  color: var(--text);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  padding: 0.18rem 0.7rem;
+  color: var(--text-mid);
+  background: #f0f0f0;
+  border: none;
+  border-radius: 999px;
+  padding: 0.22rem 0.85rem;
   cursor: pointer;
-  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  transition: background 0.12s, color 0.12s;
 }
 
 button:hover {
-  background: var(--bg-subtle);
-  border-color: #b0b0b0;
+  background: #e4e4e4;
+  color: var(--text);
 }
 
 button.active {
   background: var(--text);
   color: var(--bg);
-  border-color: var(--text);
 }
 
 button.active:hover {
   background: #333;
-  border-color: #333;
 }
 
 /* ── Canvas ──────────────────────────────────────────────────────────────── */
