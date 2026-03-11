@@ -130,6 +130,17 @@ main {
 
 canvas { display: block; }
 
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.65rem;
+  font-style: italic;
+  color: var(--text-light);
+  letter-spacing: 0.04em;
+}
+
 /* ── Stats ───────────────────────────────────────────────────────────────── */
 
 #stats {
