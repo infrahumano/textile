@@ -298,7 +298,7 @@ downloadBtn.addEventListener('click', () => {
   );
   const a = Object.assign(document.createElement('a'), {
     href:     URL.createObjectURL(new Blob([oxs], { type: 'text/xml' })),
-    download: `textile_${state.N}x${state.N}.oxs`,
+    download: `${baseName()}.oxs`,
   });
   a.click();
   URL.revokeObjectURL(a.href);
@@ -307,7 +307,7 @@ downloadBtn.addEventListener('click', () => {
 pngBtn.addEventListener('click', () => {
   const a = Object.assign(document.createElement('a'), {
     href:     canvas.toDataURL('image/png'),
-    download: `textile_${state.N}x${state.N}.png`,
+    download: `${baseName()}.png`,
   });
   a.click();
 });
@@ -328,6 +328,18 @@ sizeInput.addEventListener('change', () => {
   sizeInput.value = N;
   init(N);
 });
+
+// ── Filename helpers ──────────────────────────────────────────────────────────
+
+function seedToInt(seed) {
+  return parseInt(seed.join(''), 2);
+}
+
+function baseName() {
+  const v = seedToInt(state.rowSeed);
+  const h = seedToInt(state.colSeed);
+  return `textile_${state.N}_${v}x${h}_${state.strategy}`;
+}
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
