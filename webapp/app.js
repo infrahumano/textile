@@ -153,8 +153,8 @@ function drawSeedStrip(type, N, cs, ss) {
 }
 
 function drawBorders(N, cs, ss, M) {
-  ctx.strokeStyle = '#aaaaaa';
-  ctx.lineWidth   = 0.75;
+  ctx.strokeStyle = state.mode === 'coloured' ? '#111111' : '#aaaaaa';
+  ctx.lineWidth   = state.mode === 'coloured' ? 1.5 : 0.75;
   ctx.lineCap     = 'square';
   ctx.setLineDash([]);
 
