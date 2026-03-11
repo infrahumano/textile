@@ -405,6 +405,6 @@ window.addEventListener('load', () => {
     render();
     updateStats();
   } else {
-    init(state.N);
+    init(window.innerWidth < 600 ? 20 : 40);
   }
 });

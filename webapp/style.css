@@ -30,8 +30,8 @@ header {
   justify-content: center;
   flex-wrap: wrap;
   gap: 1.5rem;
-  padding: 0 1rem;
-  height: 36px;
+  padding: 0.4rem 1rem;
+  min-height: 36px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -49,6 +49,8 @@ h1 {
 .controls {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.75rem;
 }
 
