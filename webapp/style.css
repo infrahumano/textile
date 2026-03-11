@@ -27,6 +27,7 @@ html, body {
 header {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1.5rem;
   padding: 0 1rem;
   height: 36px;
@@ -117,6 +118,9 @@ button.active:hover {
 
 main {
   padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .canvas-wrap {
