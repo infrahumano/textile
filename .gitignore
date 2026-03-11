@@ -12,3 +12,6 @@ wheels/
 # Generated output
 *.png
 *.oxs
+
+# But keep the favicon
+!webapp/favicon.png
