@@ -1,0 +1,138 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --text:       #1e1e1e;
+  --text-mid:   #666666;
+  --text-light: #aaaaaa;
+  --border:     #e2e2e2;
+  --bg:         #ffffff;
+  --bg-subtle:  #f8f8f8;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0 1rem;
+  height: 36px;
+  border-bottom: 1px solid var(--border);
+}
+
+h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: var(--text-mid);
+  white-space: nowrap;
+}
+
+/* ── Controls ────────────────────────────────────────────────────────────── */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.field label {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--text-light);
+}
+
+.field input[type="number"],
+.field select {
+  font-family: inherit;
+  font-size: 0.75rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.4rem;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s;
+}
+
+.field input[type="number"] { width: 52px; text-align: center; }
+.field select                { cursor: pointer; }
+
+.field input[type="number"]:focus,
+.field select:focus { border-color: var(--text-mid); }
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+
+button {
+  font-family: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.18rem 0.7rem;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+button:hover {
+  background: var(--bg-subtle);
+  border-color: #b0b0b0;
+}
+
+button.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+button.active:hover {
+  background: #333;
+  border-color: #333;
+}
+
+/* ── Canvas ──────────────────────────────────────────────────────────────── */
+
+main {
+  padding: 0.75rem 1rem;
+}
+
+.canvas-wrap {
+  overflow: auto;
+  margin-bottom: 0.4rem;
+}
+
+canvas { display: block; }
+
+/* ── Stats ───────────────────────────────────────────────────────────────── */
+
+#stats {
+  font-size: 0.72rem;
+  font-style: italic;
+  color: var(--text-light);
+  letter-spacing: 0.03em;
+  min-height: 1em;
+}
