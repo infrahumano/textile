@@ -24,6 +24,7 @@ const stratSelect  = document.getElementById('strategy');
 const randomiseBtn = document.getElementById('btn-randomise');
 const colourBtn    = document.getElementById('btn-colour');
 const downloadBtn  = document.getElementById('btn-download');
+const pngBtn       = document.getElementById('btn-png');
 const statsEl      = document.getElementById('stats');
 
 // ── Layout constants ──────────────────────────────────────────────────────────
@@ -301,6 +302,14 @@ downloadBtn.addEventListener('click', () => {
   });
   a.click();
   URL.revokeObjectURL(a.href);
+});
+
+pngBtn.addEventListener('click', () => {
+  const a = Object.assign(document.createElement('a'), {
+    href:     canvas.toDataURL('image/png'),
+    download: `textile_${state.N}x${state.N}.png`,
+  });
+  a.click();
 });
 
 stratSelect.addEventListener('change', () => {
