@@ -299,18 +299,20 @@ downloadBtn.addEventListener('click', () => {
     state.colourMap, state.palette,
     { title: `Textile ${state.N}×${state.N}` }
   );
+  const p = new URLSearchParams(location.search);
   const a = Object.assign(document.createElement('a'), {
     href:     URL.createObjectURL(new Blob([oxs], { type: 'text/xml' })),
-    download: `textile_${state.N}x${state.N}.oxs`,
+    download: `textile_${p.toString().replace(/&/g, '_')}.oxs`,
   });
   a.click();
   URL.revokeObjectURL(a.href);
 });
 
 pngBtn.addEventListener('click', () => {
+  const p = new URLSearchParams(location.search);
   const a = Object.assign(document.createElement('a'), {
     href:     canvas.toDataURL('image/png'),
-    download: `textile_${state.N}x${state.N}.png`,
+    download: `textile_${p.toString().replace(/&/g, '_')}.png`,
   });
   a.click();
 });
