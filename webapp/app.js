@@ -13,6 +13,7 @@ const state = {
   palette:   null,
   mode: 'borders',         // 'borders' | 'coloured'
   strategy: 'random',      // 'random'  | 'greedy'
+  showLines: false,
 };
 
 // ── DOM ───────────────────────────────────────────────────────────────────────
@@ -24,6 +25,7 @@ const stratSelect  = document.getElementById('strategy');
 const randomiseBtn = document.getElementById('btn-randomise');
 const colourBtn    = document.getElementById('btn-colour');
 const downloadBtn  = document.getElementById('btn-download');
+const linesBtn     = document.getElementById('btn-lines');
 const pngBtn       = document.getElementById('btn-png');
 const statsEl      = document.getElementById('stats');
 
@@ -112,6 +114,7 @@ function render() {
   // Main grid
   if (mode === 'coloured' && state.colourMap) {
     drawColoured(N, cs, ss);
+    if (state.showLines) drawBorders(N, cs, ss, matrix);
   } else {
     drawBorders(N, cs, ss, matrix);
   }
@@ -315,6 +318,12 @@ pngBtn.addEventListener('click', () => {
     download: `textile_${p.toString().replace(/&/g, '_')}.png`,
   });
   a.click();
+});
+
+linesBtn.addEventListener('click', () => {
+  state.showLines = !state.showLines;
+  linesBtn.classList.toggle('active', state.showLines);
+  render();
 });
 
 stratSelect.addEventListener('change', () => {
