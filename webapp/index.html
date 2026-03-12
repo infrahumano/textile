@@ -31,6 +31,7 @@
       </div>
       <button id="btn-randomise">randomise</button>
       <button id="btn-colour">colour</button>
+      <button id="btn-palette">palette</button>
       <button id="btn-lines">lines</button>
       <button id="btn-download">download oxs</button>
       <button id="btn-png">download png</button>
@@ -45,6 +46,16 @@
   </main>
 
   <footer>this is for sadie warren</footer>
+
+  <div id="palette-modal" class="modal-backdrop" hidden>
+    <div class="modal">
+      <div id="palette-swatches" class="palette-swatches"></div>
+      <div class="modal-actions">
+        <button id="btn-palette-reset">reset</button>
+        <button id="btn-palette-set">set</button>
+      </div>
+    </div>
+  </div>
 
   <script src="textile.js"></script>
   <script src="app.js"></script>

@@ -14,6 +14,7 @@ const state = {
   mode: 'borders',         // 'borders' | 'coloured'
   strategy: 'random',      // 'random'  | 'greedy'
   showLines: false,
+  customPalette: null,     // array of 6 hex strings, or null for defaults
 };
 
 // ── DOM ───────────────────────────────────────────────────────────────────────
@@ -65,7 +66,7 @@ function recomputeColours() {
   state.colourMap = colourMap;
 
   const nColours = new Set(Array.from(colourMap).slice(1)).size;
-  state.palette  = makeColourPalette(nColours, strategy, seedHash(state.rowSeed, state.colSeed));
+  state.palette  = makeColourPalette(nColours, strategy, seedHash(state.rowSeed, state.colSeed), state.customPalette);
 }
 
 // ── Initialise ────────────────────────────────────────────────────────────────
@@ -374,6 +375,9 @@ function pushURL() {
     r: seedToHex(state.rowSeed),
     h: seedToHex(state.colSeed),
   });
+  if (state.customPalette) {
+    p.set('p', state.customPalette.map(h => h.slice(1)).join(''));
+  }
   history.replaceState(null, '', '?' + p.toString());
 }
 
@@ -390,10 +394,91 @@ function stateFromURL() {
     state.colSeed  = hexToSeed(h, state.N);
     sizeInput.value   = state.N;
     stratSelect.value = state.strategy;
+    const pParam = p.get('p');
+    if (pParam && pParam.length === 36) {
+      state.customPalette = Array.from({ length: 6 }, (_, i) => '#' + pParam.slice(i * 6, i * 6 + 6));
+    }
     return true;
   }
   return false;
 }
+
+// ── Palette modal ─────────────────────────────────────────────────────────────
+
+const GREEDY_HEX = GREEDY_COLOURS.map(([r, g, b]) => '#' + rgbToHex(r, g, b));
+
+const paletteModal    = document.getElementById('palette-modal');
+const paletteSwatches = document.getElementById('palette-swatches');
+const paletteSetBtn   = document.getElementById('btn-palette-set');
+const paletteResetBtn = document.getElementById('btn-palette-reset');
+const paletteBtn      = document.getElementById('btn-palette');
+
+const swatchInputs = GREEDY_HEX.map(hex => {
+  const wrap = document.createElement('div');
+  wrap.className = 'swatch-wrap';
+
+  const sq = document.createElement('div');
+  sq.className = 'swatch';
+  sq.style.background = hex;
+
+  const inp = document.createElement('input');
+  inp.type = 'color';
+  inp.value = hex;
+  inp.className = 'swatch-input';
+
+  sq.addEventListener('click', () => inp.click());
+  inp.addEventListener('input', () => { sq.style.background = inp.value; });
+
+  wrap.appendChild(sq);
+  wrap.appendChild(inp);
+  paletteSwatches.appendChild(wrap);
+  return inp;
+});
+
+function openPaletteModal() {
+  const current = state.customPalette ?? GREEDY_HEX;
+  swatchInputs.forEach((inp, i) => {
+    inp.value = current[i];
+    inp.previousElementSibling.style.background = current[i];
+  });
+  paletteModal.hidden = false;
+}
+
+function closePaletteModal() {
+  paletteModal.hidden = true;
+}
+
+paletteBtn.addEventListener('click', openPaletteModal);
+
+paletteModal.addEventListener('click', e => {
+  if (e.target === paletteModal) closePaletteModal();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !paletteModal.hidden) closePaletteModal();
+});
+
+paletteSetBtn.addEventListener('click', () => {
+  state.customPalette = swatchInputs.map(inp => inp.value);
+  closePaletteModal();
+  if (state.mode === 'coloured' && state.strategy === 'greedy') {
+    recomputeColours();
+    render();
+    updateStats();
+  }
+  pushURL();
+});
+
+paletteResetBtn.addEventListener('click', () => {
+  state.customPalette = null;
+  closePaletteModal();
+  if (state.mode === 'coloured' && state.strategy === 'greedy') {
+    recomputeColours();
+    render();
+    updateStats();
+  }
+  pushURL();
+});
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 

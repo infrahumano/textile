@@ -144,6 +144,58 @@ footer {
   letter-spacing: 0.04em;
 }
 
+/* ── Palette modal ───────────────────────────────────────────────────────── */
+
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.18);
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-backdrop:not([hidden]) {
+  display: flex;
+}
+
+.modal {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.palette-swatches {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.swatch-wrap {
+  position: relative;
+}
+
+.swatch {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: opacity 0.1s;
+}
+
+.swatch:hover { opacity: 0.75; }
+
+.swatch-input { display: none; }
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 /* ── Stats ───────────────────────────────────────────────────────────────── */
 
 #stats {

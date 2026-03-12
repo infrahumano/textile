@@ -105,9 +105,15 @@ const GREEDY_COLOURS = [
   [ 40, 185, 200],  // teal
 ];
 
-function makeColourPalette(nColours, strategy, seed) {
+function hexToRgb(hex) {
+  const v = parseInt(hex.slice(1), 16);
+  return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+}
+
+function makeColourPalette(nColours, strategy, seed, customPalette) {
   if (strategy === 'greedy') {
-    return Array.from({ length: nColours }, (_, i) => GREEDY_COLOURS[i % GREEDY_COLOURS.length]);
+    const base = customPalette ? customPalette.map(hexToRgb) : GREEDY_COLOURS;
+    return Array.from({ length: nColours }, (_, i) => base[i % base.length]);
   }
   const rng = mulberry32(seed);
   return Array.from({ length: nColours }, () => {
