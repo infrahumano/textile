@@ -105,11 +105,6 @@ const GREEDY_COLOURS = [
   [ 40, 185, 200],  // teal
 ];
 
-function hexToRgb(hex) {
-  const v = parseInt(hex.slice(1), 16);
-  return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
-}
-
 function makeColourPalette(nColours, strategy, seed, customPalette) {
   if (strategy === 'greedy') {
     const base = customPalette ? customPalette.map(hexToRgb) : GREEDY_COLOURS;
@@ -133,18 +128,6 @@ function seedHash(rowSeed, colSeed) {
 
 // ── OXS export ────────────────────────────────────────────────────────────────
 
-function rgbToHex(r, g, b) {
-  return [r, g, b].map(v => v.toString(16).padStart(2, '0').toUpperCase()).join('');
-}
-
-function escapeXml(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
 function toOXS(M, regions, nRegions, colourMap, palette, opts = {}) {
   const { title = 'Textile', borders = true, borderColour = '1C1C1C' } = opts;
   const N = M.length;
@@ -152,39 +135,33 @@ function toOXS(M, regions, nRegions, colourMap, palette, opts = {}) {
   const bpi = nColours + 1;
   const bc = borderColour.toUpperCase();
 
-  const L = [];
-  L.push('<?xml version="1.0" encoding="UTF-8"?>');
-  L.push('<chart>');
-  L.push(`  <properties oxsversion="1.0" software="textile-web" chartheight="${N}" chartwidth="${N}" charttitle="${escapeXml(title)}" palettecount="${nColours + (borders ? 1 : 0)}"/>`);
-  L.push('  <palette>');
-  L.push('    <palette_item index="0" number="cloth" name="cloth" color="FFFFFF" printcolor="FFFFFF" blendcolor="nil" strands="2" bsstrands="2" bscolor="FFFFFF"/>');
+  const oxsPalette = [
+    { index: 0, name: 'cloth', color: 'FFFFFF', printcolor: 'FFFFFF', blendcolor: 'nil', strands: 2, bsstrands: 2, bscolor: 'FFFFFF' },
+  ];
   for (let i = 0; i < nColours; i++) {
     const [r, g, b] = palette[i] ?? [128, 128, 128];
     const hex = rgbToHex(r, g, b);
-    L.push(`    <palette_item index="${i+1}" number="Custom ${i+1}" name="Colour ${i+1}" color="${hex}" printcolor="${hex}" blendcolor="nil" strands="2" bsstrands="2" bscolor="${hex}"/>`);
+    oxsPalette.push({ index: i + 1, name: `Colour ${i + 1}`, color: hex, printcolor: hex, blendcolor: 'nil', strands: 2, bsstrands: 2, bscolor: hex });
   }
   if (borders) {
-    L.push(`    <palette_item index="${bpi}" number="Border" name="Border" color="${bc}" printcolor="${bc}" blendcolor="nil" strands="1" bsstrands="1" bscolor="${bc}"/>`);
+    oxsPalette.push({ index: bpi, number: 'Border', name: 'Border', color: bc, printcolor: bc, blendcolor: 'nil', strands: 1, bsstrands: 1, bscolor: bc });
   }
-  L.push('  </palette>');
 
-  L.push('  <fullstitches>');
+  const stitches = [];
   for (let r = 0; r < N; r++)
     for (let c = 0; c < N; c++)
-      L.push(`    <stitch x="${c}" y="${r}" palindex="${colourMap[regions[r][c]] + 1}"/>`);
-  L.push('  </fullstitches>');
+      stitches.push({ x: c, y: r, palindex: colourMap[regions[r][c]] + 1 });
 
-  L.push('  <backstitches>');
+  const backstitches = [];
   if (borders) {
     for (let r = 0; r < N; r++) {
       for (let c = 0; c < N; c++) {
         const v = M[r][c];
-        if (v === 2 || v === 5) L.push(`    <backstitch x1="${c+1}" y1="${r}" x2="${c+1}" y2="${r+1}" palindex="${bpi}" objecttype="backstitch"/>`);
-        if (v === 3 || v === 5) L.push(`    <backstitch x1="${c}" y1="${r+1}" x2="${c+1}" y2="${r+1}" palindex="${bpi}" objecttype="backstitch"/>`);
+        if (v === 2 || v === 5) backstitches.push({ x1: c + 1, y1: r, x2: c + 1, y2: r + 1, palindex: bpi });
+        if (v === 3 || v === 5) backstitches.push({ x1: c, y1: r + 1, x2: c + 1, y2: r + 1, palindex: bpi });
       }
     }
   }
-  L.push('  </backstitches>');
-  L.push('</chart>');
-  return L.join('\n');
+
+  return buildOXS({ width: N, height: N, title, software: 'textile-web', palette: oxsPalette, stitches, backstitches });
 }
